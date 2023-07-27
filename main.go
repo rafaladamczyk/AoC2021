@@ -11,26 +11,20 @@ import (
 
 func main() {
 
-	start := time.Now()
+	total := time.Now()
 	fmt.Println("Less go!")
 
-	ans1, ans2 := day9.Run()
-	fmt.Printf("Day 9 Part 1: %s\n", ans1)
-	fmt.Printf("Day 9 Part 2: %s\n", ans2)
+	run(day9.Run, 9)
+	run(day10.Run, 10)
+	run(day11.Run, 11)
+	run(day12.Run, 12)
 
-	ans1, ans2 = day10.Run()
-	fmt.Printf("Day 10 Part 1: %s\n", ans1)
-	fmt.Printf("Day 10 Part 2: %s\n", ans2)
+	fmt.Printf("\nTotal time: %s", time.Since(total))
+}
 
-	ans1, ans2 = day11.Run()
-	fmt.Printf("Day 11 Part 1: %s\n", ans1)
-	fmt.Printf("Day 11 Part 2: %s\n", ans2)
-
-	ans1, ans2 = day12.Run()
-	fmt.Printf("Day 12 Part 1: %s\n", ans1)
-	fmt.Printf("Day 12 Part 2: %s\n", ans2)
-
+func run(runFunc func() (string, string), day int) {
+	start := time.Now()
+	ans1, ans2 := runFunc()
 	elapsed := time.Since(start)
-	fmt.Printf("\nFinished in %s", elapsed)
-
+	fmt.Printf("Day %d \t| Part1: %s\t| Part2: %s\t| %s\n", day, ans1, ans2, elapsed)
 }

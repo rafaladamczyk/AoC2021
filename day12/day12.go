@@ -28,9 +28,6 @@ func part1(lines []string) string {
 	end := m["end"]
 
 	paths := findAllPaths(start, end, make([]*Node, 0, 1000))
-	// for _, p := range paths {
-	// 	printPath(p)
-	// }
 	return fmt.Sprintf("%d", len(paths))
 }
 
@@ -47,15 +44,11 @@ func part2(lines []string) string {
 	}
 
 	normalPaths := findAllPaths(start, end, make([]*Node, 0, 1000))
-	// for _, p := range normalPaths {
-	// 	printPath(p)
-	// }
 
 	acc := 0
 	for _, small := range smalls {
 		for _, path := range findAllPaths2(start, end, make([]*Node, 0, 1000), small.name) {
 			if count(path, small) == 2 {
-				// printPath(path)
 				acc++
 			}
 		}
