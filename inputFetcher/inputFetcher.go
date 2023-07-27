@@ -1,6 +1,7 @@
 package inputFetcher
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -37,12 +38,14 @@ func check(e error) {
 }
 
 func getDataFromUrl(inputUrl string) string {
-
-	//TODO store session in ENV variable
+	session, found := os.LookupEnv("aoc_session")
+	if !found {
+		panic(errors.New("did not find session in env variables"))
+	}
 
 	cookie := &http.Cookie{
 		Name:  "session",
-		Value: "53616c7465645f5f3eb94f24f1ecbdc5d2d50e329c47bf4e31b1c3e2456c2a70e475708ad4d105e814fd162373b89ef231f430953e3fc57fbe3b760b5bdff39e",
+		Value: session,
 	}
 
 	client := &http.Client{}
