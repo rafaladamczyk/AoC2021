@@ -21,13 +21,17 @@ func Run() (string, string) {
 
 func part1(lines []string) string {
 	s := make(Stack, 0)
-	chars := []tokenPair{{first: '(', second: ')', score: 3}, {first: '[', second: ']', score: 57}, {first: '{', second: '}', score: 1197}, {first: '<', second: '>', score: 25137}}
+	tokenPairs := []tokenPair{
+		{first: '(', second: ')', score: 3},
+		{first: '[', second: ']', score: 57},
+		{first: '{', second: '}', score: 1197},
+		{first: '<', second: '>', score: 25137}}
 	sum := 0
 
 	for _, row := range lines {
 		for _, c := range row {
-			tp, found := getTokenByEndCharacter(chars, byte(c))
-			if found {
+			tp := getPairByEndChar(tokenPairs, byte(c))
+			if tp != nil {
 				if len(s) > 0 {
 					var e byte
 					s, e = s.Pop()
@@ -45,20 +49,24 @@ func part1(lines []string) string {
 }
 
 func part2(lines []string) string {
-	chars := []tokenPair{{first: '(', second: ')', score: 1}, {first: '[', second: ']', score: 2}, {first: '{', second: '}', score: 3}, {first: '<', second: '>', score: 4}}
+	tokenPairs := []tokenPair{
+		{first: '(', second: ')', score: 1},
+		{first: '[', second: ']', score: 2},
+		{first: '{', second: '}', score: 3},
+		{first: '<', second: '>', score: 4}}
 	scores := make([]int, 0)
 
 	for _, row := range lines {
 		score := 0
 		s := make(Stack, 0)
 		for _, c := range row {
-			tp, found := getTokenByEndCharacter(chars, byte(c))
-			if found {
+			tp := getPairByEndChar(tokenPairs, byte(c))
+			if tp != nil {
 				if len(s) > 0 {
 					var e byte
 					s, e = s.Pop()
 					if e != tp.first {
-						s = s[0:0] // corrupted row, empty the stack
+						s = s[:0] // corrupted row, empty the stack
 						break
 					}
 				}
@@ -69,9 +77,9 @@ func part2(lines []string) string {
 
 		if len(s) > 0 {
 			for i := len(s); i > 0; i-- {
-				var v byte
-				s, v = s.Pop()
-				tp, _ := getTokenByStartCharacter(chars, v)
+				var c byte
+				s, c = s.Pop()
+				tp := getPairByStartChar(tokenPairs, c)
 				score = score*5 + int(tp.score)
 			}
 			scores = append(scores, score)
@@ -84,22 +92,22 @@ func part2(lines []string) string {
 	return fmt.Sprintf("%d", scores[middle])
 }
 
-func getTokenByEndCharacter(s []tokenPair, x byte) (*tokenPair, bool) {
+func getPairByEndChar(s []tokenPair, x byte) *tokenPair {
 	for _, b := range s {
 		if b.second == x {
-			return &b, true
+			return &b
 		}
 	}
 
-	return nil, false
+	return nil
 }
 
-func getTokenByStartCharacter(s []tokenPair, x byte) (*tokenPair, bool) {
+func getPairByStartChar(s []tokenPair, x byte) *tokenPair {
 	for _, b := range s {
 		if b.first == x {
-			return &b, true
+			return &b
 		}
 	}
 
-	return nil, false
+	return nil
 }
