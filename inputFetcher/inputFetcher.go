@@ -1,4 +1,4 @@
-package main
+package inputFetcher
 
 import (
 	"fmt"
@@ -11,16 +11,16 @@ import (
 )
 
 type Point struct {
-	x, y int
+	X, Y int
 }
 
 func GetDirs() []Point {
-	return []Point{{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y: -1}}
+	return []Point{{X: 1, Y: 0}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 0, Y: -1}}
 }
 
 func GetInput(day int) []string {
-	x := getDataFromUrl(fmt.Sprintf("https://adventofcode.com/2021/day/%d/input", day))
-	return split(x)
+	ss := getDataFromUrl(fmt.Sprintf("https://adventofcode.com/2021/day/%d/input", day))
+	return split(ss)
 }
 
 func GetExampleInput() []string {
@@ -37,6 +37,8 @@ func check(e error) {
 }
 
 func getDataFromUrl(inputUrl string) string {
+
+	//TODO store session in ENV variable
 
 	cookie := &http.Cookie{
 		Name:  "session",

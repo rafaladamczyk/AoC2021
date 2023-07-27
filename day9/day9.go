@@ -1,7 +1,8 @@
-package main
+package day9
 
 import (
 	"fmt"
+	. "raf/aoc2021/inputFetcher"
 	"sort"
 )
 
@@ -34,7 +35,7 @@ func part2(lines []string) string {
 	for y, row := range m {
 		for x := range row {
 			if isLowPoint(m, x, y) {
-				lowPoints = append(lowPoints, Point{x: x, y: y})
+				lowPoints = append(lowPoints, Point{X: x, Y: y})
 			}
 		}
 	}
@@ -56,15 +57,15 @@ func part2(lines []string) string {
 }
 
 func getBasinSize(m [][]int, seen [][]bool, p Point) int {
-	myvalue := m[p.y][p.x]
+	myvalue := m[p.Y][p.X]
 	size := 1
-	seen[p.y][p.x] = true
+	seen[p.Y][p.X] = true
 
 	for _, n := range getNeighbors(m, p) {
-		if seen[n.y][n.x] {
+		if seen[n.Y][n.X] {
 			continue
 		}
-		theirValue := m[n.y][n.x]
+		theirValue := m[n.Y][n.X]
 		if theirValue < 9 && myvalue < theirValue {
 			size += getBasinSize(m, seen, n)
 		}
@@ -73,8 +74,8 @@ func getBasinSize(m [][]int, seen [][]bool, p Point) int {
 }
 
 func isLowPoint(m [][]int, x, y int) bool {
-	for _, n := range getNeighbors(m, Point{x: x, y: y}) {
-		if m[n.y][n.x] <= m[y][x] {
+	for _, n := range getNeighbors(m, Point{X: x, Y: y}) {
+		if m[n.Y][n.X] <= m[y][x] {
 			return false
 		}
 	}
@@ -85,7 +86,7 @@ func isLowPoint(m [][]int, x, y int) bool {
 func getNeighbors(m [][]int, p Point) []Point {
 	neighbors := make([]Point, 0, 4)
 	for _, d := range GetDirs() {
-		candidate := Point{x: d.x + p.x, y: d.y + p.y}
+		candidate := Point{X: d.X + p.X, Y: d.Y + p.Y}
 		if isValid(m, candidate) {
 			neighbors = append(neighbors, candidate)
 		}
@@ -95,5 +96,5 @@ func getNeighbors(m [][]int, p Point) []Point {
 }
 
 func isValid(m [][]int, p Point) bool {
-	return p.x >= 0 && p.y >= 0 && p.x < len(m[0]) && p.y < len(m)
+	return p.X >= 0 && p.Y >= 0 && p.X < len(m[0]) && p.Y < len(m)
 }

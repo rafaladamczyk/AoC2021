@@ -1,5 +1,7 @@
 package main
 
+import "raf/aoc2021/day9"
+
 func main() {
-	Day9()
+	day9.Day9()
 }
