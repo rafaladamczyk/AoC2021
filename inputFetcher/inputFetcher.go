@@ -15,13 +15,27 @@ type Point struct {
 	X, Y int
 }
 
-func GetDirs() []Point {
-	return []Point{{X: 1, Y: 0}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 0, Y: -1}}
+func GetDirs(includeDiagonals bool) []Point {
+	if includeDiagonals {
+
+		return []Point{
+			{X: 1, Y: 0}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 0, Y: -1},
+			{X: 1, Y: 1}, {X: 1, Y: -1}, {X: -1, Y: 1}, {X: -1, Y: -1}}
+	} else {
+		return []Point{{X: 1, Y: 0}, {X: 0, Y: 1}, {X: -1, Y: 0}, {X: 0, Y: -1}}
+	}
 }
 
 func GetInput(day int) []string {
-	ss := getDataFromUrl(fmt.Sprintf("https://adventofcode.com/2021/day/%d/input", day))
-	return split(ss)
+	fName := fmt.Sprintf("inputs/day%d.txt", day)
+	data, e := os.ReadFile(fName)
+	if e != nil && os.IsNotExist(e) {
+		data = getDataFromUrl(fmt.Sprintf("https://adventofcode.com/2021/day/%d/input", day))
+		err := os.WriteFile(fName, data, 0)
+		check(err)
+	}
+
+	return split(string(data))
 }
 
 func GetExampleInput() []string {
@@ -37,7 +51,7 @@ func check(e error) {
 	}
 }
 
-func getDataFromUrl(inputUrl string) string {
+func getDataFromUrl(inputUrl string) []byte {
 	session, found := os.LookupEnv("aoc_session")
 	if !found {
 		panic(errors.New("did not find session in env variables"))
@@ -61,7 +75,7 @@ func getDataFromUrl(inputUrl string) string {
 		log.Fatalln(err)
 	}
 
-	return string(bytes)
+	return bytes
 }
 
 func split(input string) []string {
@@ -111,4 +125,30 @@ func Make2DCharArray(lines []string) [][]uint8 {
 	}
 
 	return chars
+}
+
+func GetNeighbors(m [][]int, p Point, includeDiagonals bool) []Point {
+	neighbors := make([]Point, 0, 4)
+	for _, d := range GetDirs(includeDiagonals) {
+		candidate := Point{X: d.X + p.X, Y: d.Y + p.Y}
+		if isValid(m, candidate) {
+			neighbors = append(neighbors, candidate)
+		}
+	}
+
+	return neighbors
+}
+
+func isValid(m [][]int, p Point) bool {
+	return p.X >= 0 && p.Y >= 0 && p.X < len(m[0]) && p.Y < len(m)
+}
+
+func Sum(a [][]int) int {
+	acc := 0
+	for _, row := range a {
+		for _, v := range row {
+			acc += v
+		}
+	}
+	return acc
 }

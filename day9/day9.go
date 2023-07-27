@@ -59,7 +59,7 @@ func getBasinSize(m [][]int, seen [][]bool, p Point) int {
 	size := 1
 	seen[p.Y][p.X] = true
 
-	for _, n := range getNeighbors(m, p) {
+	for _, n := range GetNeighbors(m, p, false) {
 		if seen[n.Y][n.X] {
 			continue
 		}
@@ -72,27 +72,11 @@ func getBasinSize(m [][]int, seen [][]bool, p Point) int {
 }
 
 func isLowPoint(m [][]int, x, y int) bool {
-	for _, n := range getNeighbors(m, Point{X: x, Y: y}) {
+	for _, n := range GetNeighbors(m, Point{X: x, Y: y}, false) {
 		if m[n.Y][n.X] <= m[y][x] {
 			return false
 		}
 	}
 
 	return true
-}
-
-func getNeighbors(m [][]int, p Point) []Point {
-	neighbors := make([]Point, 0, 4)
-	for _, d := range GetDirs() {
-		candidate := Point{X: d.X + p.X, Y: d.Y + p.Y}
-		if isValid(m, candidate) {
-			neighbors = append(neighbors, candidate)
-		}
-	}
-
-	return neighbors
-}
-
-func isValid(m [][]int, p Point) bool {
-	return p.X >= 0 && p.Y >= 0 && p.X < len(m[0]) && p.Y < len(m)
 }
