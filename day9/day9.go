@@ -6,12 +6,10 @@ import (
 	"sort"
 )
 
-func Day9() {
+func Run() (string, string) {
 	//input := GetExampleInput()
 	input := GetInput(9)
-	fmt.Println("Less go!")
-	fmt.Printf("Day 9 Part 1: %s\n", part1(input))
-	fmt.Printf("Day 9 Part 2: %s\n", part2(input))
+	return part1(input), part2(input)
 }
 
 func part1(lines []string) string {
