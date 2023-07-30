@@ -43,18 +43,31 @@ func part2(lines []string) string {
 		}
 	}
 
-	normalPaths := findAllPaths(start, end, make([]*Node, 0, 1000))
+	normalChan := make(chan int)
+	go func() { normalChan <- len(findAllPaths(start, end, make([]*Node, 0, 1000))) }()
 
-	acc := 0
-	for _, small := range smalls {
-		for _, path := range findAllPaths2(start, end, make([]*Node, 0, 1000), small.name) {
-			if count(path, small) == 2 {
-				acc++
+	smallChans := make([]chan int, len(smalls))
+
+	for i, small := range smalls {
+		smallChans[i] = make(chan int)
+		go func(smallNode *Node, sc chan int) {
+			acc := 0
+			for _, path := range findAllPaths2(start, end, make([]*Node, 0, 1000), smallNode.name) {
+				if count(path, smallNode) == 2 {
+					acc++
+				}
 			}
-		}
+
+			sc <- acc
+		}(small, smallChans[i])
 	}
 
-	return fmt.Sprintf("%d", len(normalPaths)+acc)
+	result := <-normalChan
+	for _, smallChan := range smallChans {
+		result += <-smallChan
+	}
+
+	return fmt.Sprintf("%d", result)
 }
 func findAllPaths(start, end *Node, visited []*Node) [][]*Node {
 	if start == end {
@@ -96,8 +109,7 @@ func findAllPaths2(start, end *Node, visited []*Node, small string) [][]*Node {
 	paths := make([][]*Node, 0)
 
 	for _, dest := range start.destinations {
-		visitedCount := count(visited, dest)
-		if dest.isBig || visitedCount == 0 || (dest.name == small && visitedCount == 1) {
+		if dest.isBig || (dest.name == small && count(visited, dest) <= 1) || !contains(visited, dest) {
 			v := make([]*Node, len(visited))
 			copy(v, visited)
 			for _, path := range findAllPaths2(dest, end, v, small) {
