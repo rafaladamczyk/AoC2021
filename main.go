@@ -5,6 +5,7 @@ import (
 	"raf/aoc2021/day10"
 	"raf/aoc2021/day11"
 	"raf/aoc2021/day12"
+	"raf/aoc2021/day13"
 	"raf/aoc2021/day9"
 	"time"
 )
@@ -18,6 +19,7 @@ func main() {
 	run(day10.Run, 10)
 	run(day11.Run, 11)
 	run(day12.Run, 12)
+	run(day13.Run, 13)
 
 	fmt.Printf("\nTotal time: %s", time.Since(total))
 }
