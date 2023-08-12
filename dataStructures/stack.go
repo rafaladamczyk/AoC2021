@@ -1,4 +1,4 @@
-package stack
+package datastructures
 
 type Stack []byte
 
